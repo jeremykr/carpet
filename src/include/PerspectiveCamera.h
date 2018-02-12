@@ -3,8 +3,17 @@
 
 class PerspectiveCamera : public Camera {
 public:
-    PerspectiveCamera();
+    PerspectiveCamera(
+        float nearPlane,
+        float farPlane,
+        float aspectRatio, 
+        float fieldOfView
+    );
+
+    glm::mat4 getProjectionMatrix() override;
+    
 private:
-    float fov;
+    float aspectRatio;
+    float fieldOfView;
     glm::mat4 projectionMatrix;
 };

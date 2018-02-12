@@ -9,6 +9,7 @@
 
 #include "RenderObject.h"
 #include "Triangle.h"
+#include "PerspectiveCamera.h"
 
 class App {
 public:
@@ -22,10 +23,12 @@ private:
     unsigned int windowWidth;
     unsigned int windowHeight;
     std::vector<RenderObject*> objects;
+    Camera* camera;
 
     void init();
     void loadContent();
     void loop();
     void cleanup();
     void draw();
+    void update();
 };

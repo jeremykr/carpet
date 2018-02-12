@@ -1,4 +1,5 @@
 #include "App.h"
+#include <glm/gtx/string_cast.hpp>
 
 App::App(unsigned int windowWidth, unsigned int windowHeight):
     windowWidth(windowWidth),
@@ -8,7 +9,11 @@ App::App(unsigned int windowWidth, unsigned int windowHeight):
             sf::VideoMode(windowWidth, windowHeight), 
             "Wow!"
         )
-    ) { }
+    ),
+    camera(
+        new PerspectiveCamera(0.05, 1000, 800./600., 60)
+    )
+    { }
 
 unsigned int App::getWindowWidth() { return windowWidth; }
 unsigned int App::getWindowHeight() { return windowHeight; }
@@ -23,13 +28,20 @@ void App::init() {
 }
 
 void App::loadContent() {
+    camera->pos = glm::vec3(0, 0, 2);
     objects.push_back(new Triangle());
 }
 
 void App::draw() {
+    glClear(GL_COLOR_BUFFER_BIT);
     for (RenderObject* o : objects) {
-        o->draw();
+        o->draw(camera);
     }
+    window->display();
+}
+
+void App::update() {
+    
 }
 
 void App::loop() {
@@ -42,7 +54,7 @@ void App::loop() {
             }
         }
         App::draw();
-        window->display();
+        App::update();
     }
 }
 

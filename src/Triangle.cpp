@@ -1,4 +1,5 @@
 #include "Triangle.h"
+#include <iostream>
 
 Triangle::Triangle() {
     // Define vertex data
@@ -12,8 +13,9 @@ Triangle::Triangle() {
     const GLchar* vShaderSource = R"glsl(
     # version 330 core
     layout(location = 0) in vec3 pos;
+    uniform mat4 MVP;
     void main() {
-        gl_Position = vec4(pos, 1.0);
+        gl_Position = MVP * vec4(pos, 1.0);
     })glsl";
 
     const GLchar* fShaderSource = R"glsl(
@@ -42,6 +44,12 @@ Triangle::Triangle() {
     );
     glCompileShader(vsid);
 
+    GLchar infoLog [100];
+    GLsizei length;
+
+    glGetShaderInfoLog(vsid, 100, &length, infoLog);
+    std::cout << infoLog << std::endl;
+
     // Fragment Shader
     fsid = glCreateShader(GL_FRAGMENT_SHADER);
     glShaderSource(
@@ -52,14 +60,26 @@ Triangle::Triangle() {
     );
     glCompileShader(fsid);
 
+    glGetShaderInfoLog(fsid, 100, &length, infoLog);
+    std::cout << infoLog << std::endl;
+
     // Create shader program
     pid = glCreateProgram();
     glAttachShader(pid, vsid);
     glAttachShader(pid, fsid);
+    glLinkProgram(pid);
 }
 
-void Triangle::draw() {
+void Triangle::draw(Camera* camera) {
     glUseProgram(pid);
+
+    glm::mat4 ident;
+    glm::mat4 modelMatrix = glm::translate(ident, pos) * glm::scale(ident, scale);
+    glm::mat4 MVP = camera->getProjectionMatrix() * camera->getViewMatrix() * modelMatrix;
+
+    GLuint loc = glGetUniformLocation(pid, "MVP");
+    glUniformMatrix4fv(loc, 1, GL_FALSE, glm::value_ptr(MVP));
+
     glEnableVertexAttribArray(0);
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);

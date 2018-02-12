@@ -7,18 +7,20 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/quaternion.hpp>
 #include <glm/gtx/quaternion.hpp>
+#include "Camera.h"
 
 class RenderObject {
 public:
     RenderObject();
-    virtual void draw() = 0;
+    
+    virtual void draw(Camera* camera);
     virtual void move(glm::vec3 d);
-    virtual void setPosition(glm::vec3 p);
     virtual void rotate(glm::quat q);
-    virtual void setRotation(glm::quat q);
-private:
-    GLuint pid, vbo;
+
     glm::vec3 pos = glm::vec3(0, 0, 0);
     glm::vec3 scale = glm::vec3(1, 1, 1);
     glm::quat quat;
+
+protected:
+    GLuint pid, vbo;
 };
