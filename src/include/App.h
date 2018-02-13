@@ -6,6 +6,7 @@
 #include <GL/glu.h>
 #include <SFML/Graphics.hpp>
 #include <iostream>
+#include <chrono>
 
 #include "RenderObject.h"
 #include "Triangle.h"
@@ -24,11 +25,12 @@ private:
     unsigned int windowHeight;
     std::vector<RenderObject*> objects;
     Camera* camera;
+    float fps;
 
     void init();
     void loadContent();
     void loop();
     void cleanup();
     void draw();
-    void update();
+    void update(float dt);
 };
