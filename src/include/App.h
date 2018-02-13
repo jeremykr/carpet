@@ -11,6 +11,7 @@
 #include "RenderObject.h"
 #include "Triangle.h"
 #include "PerspectiveCamera.h"
+#include "Scene.h"
 
 class App {
 public:
@@ -23,7 +24,8 @@ private:
     sf::RenderWindow* window;
     unsigned int windowWidth;
     unsigned int windowHeight;
-    std::vector<RenderObject*> objects;
+    std::vector<Scene*> scenes;
+    size_t activeSceneId = 0;
     Camera* camera;
     float fps;
 

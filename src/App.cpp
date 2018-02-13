@@ -1,4 +1,5 @@
 #include "App.h"
+#include "TestScene1.h"
 #include <glm/gtx/string_cast.hpp>
 
 App::App(unsigned int windowWidth, unsigned int windowHeight):
@@ -29,24 +30,19 @@ void App::init() {
 
 // Setup and load app content, including game objects and cameras.
 void App::loadContent() {
-    camera = new PerspectiveCamera(0.05, 1000, 800./600., 60);
-    camera->pos = glm::vec3(0, 0, 2);
-    objects.push_back(new Triangle());
+    scenes.push_back(new TestScene1());
 }
 
 // Draw all active contents to the screen.
 void App::draw() {
-    glClear(GL_COLOR_BUFFER_BIT);
-    for (RenderObject* o : objects) {
-        o->draw(camera);
-    }
+    scenes[activeSceneId]->draw();
     window->display();
 }
 
 // Update app contents.
-// dt:  Duration of time between game loops.
+// dt:  Time since last call.
 void App::update(float dt) {
-    camera->pos += glm::vec3(0, 0, 1) * dt;
+    scenes[activeSceneId]->update(dt);
 }
 
 // Main loop.
