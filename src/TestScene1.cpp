@@ -7,5 +7,6 @@ TestScene1::TestScene1() {
 }
 
 void TestScene1::update(float dt) {
-    camera->pos += glm::vec3(0, 0, 1) * dt;
+    camera->move(glm::vec3(0, 0, 1) * dt);
+    camera->rotate(1 * dt, glm::vec3(0, 0, 1));
 }

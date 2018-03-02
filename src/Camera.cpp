@@ -1,6 +1,4 @@
 #include "Camera.h"
-#include <iostream>
-#include <glm/gtx/string_cast.hpp>
 
 Camera::Camera(float nearPlane, float farPlane):
     nearPlane(nearPlane),
@@ -13,10 +11,12 @@ glm::mat4 Camera::getViewMatrix() {
         glm::inverse(glm::translate(glm::mat4(), pos));
 }
 
-void Camera::move(glm::vec3 d) {
-
+void Camera::move(glm::vec3 direction) {
+    pos += glm::rotate(quat, direction);
 }
 
-void Camera::rotate(glm::quat q) {
-
+void Camera::rotate(float angle, glm::vec3 axis, bool useRadians) {
+    if (useRadians) angle = glm::radians(angle);
+    axis = glm::rotate(quat, axis);
+    quat = glm::angleAxis(angle, axis) * quat;
 }

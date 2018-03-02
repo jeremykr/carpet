@@ -6,8 +6,8 @@
 
 class Camera {
 public:
-    virtual void move(glm::vec3 d);
-    virtual void rotate(glm::quat q);
+    virtual void move(glm::vec3 direction);
+    virtual void rotate(float angle, glm::vec3 axis, bool useRadians=false);
     virtual glm::mat4 getProjectionMatrix() = 0;
     glm::mat4 getViewMatrix();
 
