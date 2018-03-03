@@ -14,8 +14,10 @@
 #include "Scene.h"
 
 class App {
+
 public:
     App(unsigned int windowWidth, unsigned int windowHeight);
+    ~App();
     void run();
     unsigned int getWindowWidth();
     unsigned int getWindowHeight();
@@ -26,13 +28,11 @@ private:
     unsigned int windowHeight;
     std::vector<Scene*> scenes;
     size_t activeSceneId = 0;
-    Camera* camera;
     float fps;
 
     void init();
     void loadContent();
     void loop();
-    void cleanup();
     void draw();
     void update(float dt);
 };

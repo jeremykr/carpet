@@ -13,6 +13,12 @@ App::App(unsigned int windowWidth, unsigned int windowHeight):
     )
 { }
 
+App::~App() {
+    delete window;
+    for (size_t i = 0; i < scenes.size(); i++) 
+        delete scenes[i];
+ }
+
 unsigned int App::getWindowWidth() { return windowWidth; }
 unsigned int App::getWindowHeight() { return windowHeight; }
 
@@ -76,11 +82,8 @@ void App::loop() {
     }
 }
 
-void App::cleanup() { }
-
 void App::run() {
     init();
     loadContent();
     loop();
-    cleanup();
 }

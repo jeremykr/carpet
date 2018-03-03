@@ -5,6 +5,8 @@
 
 class Scene {
 public:
+    ~Scene();
+
     std::vector<RenderObject*> objects;
     Camera* camera;
 
