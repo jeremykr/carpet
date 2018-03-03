@@ -18,7 +18,6 @@ class App {
 public:
     App(unsigned int windowWidth, unsigned int windowHeight);
     ~App();
-    void run();
     unsigned int getWindowWidth();
     unsigned int getWindowHeight();
 

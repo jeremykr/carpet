@@ -1,7 +1,6 @@
 #include "App.h"
 
 int main() {
-    App app(800, 600);
-    app.run();
+    new App(800, 600);
     return EXIT_SUCCESS;
 }

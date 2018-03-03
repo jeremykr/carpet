@@ -11,28 +11,20 @@ App::App(unsigned int windowWidth, unsigned int windowHeight):
             "Wow!"
         )
     )
-{ }
+{
+    init();
+    loadContent();
+    loop();
+}
 
 App::~App() {
     delete window;
     for (size_t i = 0; i < scenes.size(); i++) 
         delete scenes[i];
- }
+}
 
 unsigned int App::getWindowWidth() { return windowWidth; }
 unsigned int App::getWindowHeight() { return windowHeight; }
-
-// App initialization, including GLEW.
-void App::init() {
-    if (glewInit() != GLEW_OK) {
-        std::cerr << "GLEW failed to initialize." << std::endl;
-    } else {
-        std::cout << "GLEW successfully initialized." << std::endl;
-    }
-    glClearColor(0, 0, 0, 0);
-
-    fps = 60.0;
-}
 
 // Setup and load app content, including game objects and cameras.
 void App::loadContent() {
@@ -82,8 +74,14 @@ void App::loop() {
     }
 }
 
-void App::run() {
-    init();
-    loadContent();
-    loop();
+void App::init() {
+    // App initialization, including GLEW.
+    if (glewInit() != GLEW_OK) {
+        std::cerr << "GLEW failed to initialize." << std::endl;
+    } else {
+        std::cout << "GLEW successfully initialized." << std::endl;
+    }
+    glClearColor(0, 0, 0, 0);
+
+    fps = 60.0;
 }
