@@ -15,7 +15,7 @@ public:
     
     virtual void draw(Camera* camera);
     virtual void move(glm::vec3 d);
-    virtual void rotate(glm::quat q);
+    virtual void rotate(float angle, glm::vec3 axis, bool useRadians=false);
 
     glm::vec3 pos = glm::vec3(0, 0, 0);
     glm::vec3 scale = glm::vec3(1, 1, 1);

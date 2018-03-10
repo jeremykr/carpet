@@ -7,6 +7,7 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
 #include <chrono>
+#include <cstring>
 
 #include "RenderObject.h"
 #include "Triangle.h"

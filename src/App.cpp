@@ -5,6 +5,9 @@
 App::App(unsigned int windowWidth, unsigned int windowHeight):
     windowWidth(windowWidth),
     windowHeight(windowHeight),
+    // The RenderWindow is required to set up an OpenGL context,
+    // so we must include it here before initializing anything 
+    // GL-related (including GLEW).
     window(
         new sf::RenderWindow(
             sf::VideoMode(windowWidth, windowHeight), 
@@ -12,9 +15,15 @@ App::App(unsigned int windowWidth, unsigned int windowHeight):
         )
     )
 {
-    init();
-    loadContent();
-    loop();
+    // Check if GLEW initializes successfully.
+    // If so, run the app. If not, then we have to exit.
+    if (glewInit() == GLEW_OK) {
+        init();
+        loadContent();
+        loop();
+    } else {
+        std::cout << "GLEW failed to initialize." << std::endl;
+    }
 }
 
 App::~App() {
@@ -75,13 +84,6 @@ void App::loop() {
 }
 
 void App::init() {
-    // App initialization, including GLEW.
-    if (glewInit() != GLEW_OK) {
-        std::cerr << "GLEW failed to initialize." << std::endl;
-    } else {
-        std::cout << "GLEW successfully initialized." << std::endl;
-    }
     glClearColor(0, 0, 0, 0);
-
     fps = 60.0;
 }

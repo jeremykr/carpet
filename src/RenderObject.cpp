@@ -10,6 +10,6 @@ void RenderObject::move(glm::vec3 d) {
 
 }
 
-void RenderObject::rotate(glm::quat q) {
+void RenderObject::rotate(float angle, glm::vec3 axis, bool useRadians) {
 
 }
