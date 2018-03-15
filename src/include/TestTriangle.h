@@ -9,8 +9,8 @@
 #include <string>
 #include "RenderObject.h"
 
-class Triangle : public RenderObject {
+class TestTriangle : public RenderObject {
 public:
-    Triangle();
+    TestTriangle();
     void draw(Camera* camera) override;
 };

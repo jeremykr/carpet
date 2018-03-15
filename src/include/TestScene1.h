@@ -1,7 +1,8 @@
 #pragma once
 #include "Scene.h"
-#include "Triangle.h"
+#include "TestTriangle.h"
 #include "PerspectiveCamera.h"
+#include "OBJ.h"
 
 class TestScene1 : public Scene {
 public:

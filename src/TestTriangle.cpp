@@ -1,7 +1,7 @@
-#include "Triangle.h"
+#include "TestTriangle.h"
 #include <iostream>
 
-Triangle::Triangle() {
+TestTriangle::TestTriangle() {
     // Define vertex data
     GLfloat vbuf [9] = {
         -1., -1., 0.,
@@ -70,7 +70,7 @@ Triangle::Triangle() {
     glLinkProgram(pid);
 }
 
-void Triangle::draw(Camera* camera) {
+void TestTriangle::draw(Camera* camera) {
     glUseProgram(pid);
 
     glm::mat4 ident;

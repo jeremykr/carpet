@@ -9,9 +9,6 @@
 #include <chrono>
 #include <cstring>
 
-#include "RenderObject.h"
-#include "Triangle.h"
-#include "PerspectiveCamera.h"
 #include "Scene.h"
 
 class App {
