@@ -9,14 +9,29 @@ TestScene1::TestScene1() {
     OBJ::PointInfo p;
 
     for (OBJ::TriangleInfo t : obj.f) {
+        std::cout << "Triangle" << std::endl;
         for (unsigned i = 0; i < 3; i++) {
             p = t.points[i];
-            std::cout 
-                << p.vIndex << "/"
-                << p.vtIndex << "/"
-                << p.vnIndex << " ";
+            std::cout << "\tPoint " << i << std::endl;
+            std::cout << "\t\tPosition" << std::endl;
+            std::cout << "\t\t\t";
+            for (auto x : obj.v[p.vIndex]) {
+                std::cout << x << " ";
+            }
+            std::cout << std::endl;
+            std::cout << "\t\tTexture" << std::endl;
+            std::cout << "\t\t\t";
+            for (auto x : obj.vt[p.vtIndex]) {
+                std::cout << x << " ";
+            }
+            std::cout << std::endl;
+            std::cout << "\t\tNormal" << std::endl;
+            std::cout << "\t\t\t";
+            for (auto x : obj.vn[p.vnIndex]) {
+                std::cout << x << " ";
+            }
+            std::cout << std::endl;
         }
-        std::cout << std::endl;
     }
 
 }

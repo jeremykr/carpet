@@ -69,9 +69,11 @@ TriangleInfo parseTriangle(const std::string& line) {
             valueType = 0;
             valueSize = 0;
             PointInfo pinf;
-            pinf.vIndex = vIndex;
-            pinf.vtIndex = vtIndex;
-            pinf.vnIndex = vnIndex;
+            // Subtract 1 so that all values are 0-based
+            // instead of 1-based as they appear in the file
+            pinf.vIndex = vIndex-1;
+            pinf.vtIndex = vtIndex-1;
+            pinf.vnIndex = vnIndex-1;
             tinf.points[pointIndex] = pinf;
             if (i == line.length() - 1) {
                 pointIndex = 0;
@@ -110,9 +112,10 @@ OBJ parseFromFile(const std::string& filename) {
                     file.close();
                     return obj;
                 }
+                
             } else if (line.length() > 1 && line.compare(0, 3, "vt ") == 0) {
                 try {
-                    obj.v.push_back(parseVec(line.substr(3)));
+                    obj.vt.push_back(parseVec(line.substr(3)));
                 } catch (const std::invalid_argument& e) {
                     std::cerr << e.what() << std::endl;
                     file.close();
@@ -121,7 +124,7 @@ OBJ parseFromFile(const std::string& filename) {
 
             } else if (line.length() > 1 && line.compare(0, 3, "vn ") == 0) {
                 try {
-                    obj.v.push_back(parseVec(line.substr(3)));
+                    obj.vn.push_back(parseVec(line.substr(3)));
                 } catch (const std::invalid_argument& e) {
                     std::cerr << e.what() << std::endl;
                     file.close();
