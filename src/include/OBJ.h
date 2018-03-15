@@ -5,6 +5,7 @@
 #include <string>
 #include <glm/glm.hpp>
 #include <stdlib.h>
+#include <stdexcept>
 
 // Structs and functions for parsing a Wavefront .obj file
 namespace OBJ {

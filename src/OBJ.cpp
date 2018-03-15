@@ -8,14 +8,17 @@ namespace OBJ {
 std::vector<float> parseVec(const std::string& line) {
     std::vector<float> v;
     std::string element;
+    std::string error = "Found invalid value when parsing .obj decimal values: ";
     char c;
     for (size_t i = 0; i < line.length(); i++) {
         c = line.at(i);
         if (c == ' ') {
             v.push_back(std::stof(element));
             element.clear();
-        } else {
+        } else if (c >= '0' && c <= '9' || c == '.' || c == '-') {
             element.push_back(c);
+        } else {
+            throw std::invalid_argument(error + c);
         }
     }
     v.push_back(std::stof(element));
@@ -24,9 +27,10 @@ std::vector<float> parseVec(const std::string& line) {
 
 // Parse a string from the .obj file into a TriangleInfo object
 TriangleInfo parseTriangle(const std::string& line) {
-    char value [100];
+    char value [10];
     size_t valueSize = 0;
     char c;
+    std::string error = "Found invalid value when parsing .obj triangle indices: ";
 
     unsigned vIndex, vtIndex, vnIndex;
     // 0 : Position, 1 : Texture, 2: Normal
@@ -68,8 +72,10 @@ TriangleInfo parseTriangle(const std::string& line) {
             } else {
                 pointIndex++;
             }
-        } else {
+        } else if (c >= '0' && c <= '9') {
             value[valueSize++] = c;
+        } else {
+            throw std::invalid_argument(error + c);
         }
     }
     return tinf;
@@ -91,13 +97,30 @@ OBJ parseFromFile(const std::string& filename) {
                 obj.o = line.substr(2);
 
             } else if (line.length() > 1 && line.compare(0, 2, "v ") == 0) {
-                obj.v.push_back(parseVec(line.substr(2)));
-
+                try {
+                    obj.v.push_back(parseVec(line.substr(2)));
+                } catch (const std::invalid_argument& e) {
+                    std::cerr << e.what() << std::endl;
+                    file.close();
+                    return obj;
+                }
             } else if (line.length() > 1 && line.compare(0, 3, "vt ") == 0) {
-                obj.vt.push_back(parseVec(line.substr(3)));
+                try {
+                    obj.v.push_back(parseVec(line.substr(3)));
+                } catch (const std::invalid_argument& e) {
+                    std::cerr << e.what() << std::endl;
+                    file.close();
+                    return obj;
+                }
 
             } else if (line.length() > 1 && line.compare(0, 3, "vn ") == 0) {
-                obj.vn.push_back(parseVec(line.substr(3)));
+                try {
+                    obj.v.push_back(parseVec(line.substr(3)));
+                } catch (const std::invalid_argument& e) {
+                    std::cerr << e.what() << std::endl;
+                    file.close();
+                    return obj;
+                }
 
             } else if (line.length() > 6 && line.compare(0, 7, "usemtl") == 0) {
                 obj.usemtl = line.substr(7);
@@ -106,7 +129,13 @@ OBJ parseFromFile(const std::string& filename) {
                 obj.s = line.substr(2);
 
             } else if (line.length() > 1 && line.compare(0, 2, "f ") == 0) {
-                obj.f.push_back(parseTriangle(line.substr(2)));
+                try {
+                    obj.f.push_back(parseTriangle(line.substr(2)));
+                } catch (const std::invalid_argument& e) {
+                    std::cerr << e.what() << std::endl;
+                    file.close();
+                    return obj;
+                }
             }
         }
 
