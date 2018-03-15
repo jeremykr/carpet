@@ -27,10 +27,12 @@ std::vector<float> parseVec(const std::string& line) {
 
 // Parse a string from the .obj file into a TriangleInfo object
 TriangleInfo parseTriangle(const std::string& line) {
-    char value [10];
+    const size_t maxValueSize = 10;
+    char value [maxValueSize];
     size_t valueSize = 0;
     char c;
-    std::string error = "Found invalid value when parsing .obj triangle indices: ";
+    std::string iae = "Found invalid value when parsing .obj triangle indices: ";
+    std::string le = "Index too large!";
 
     unsigned vIndex, vtIndex, vnIndex;
     // 0 : Position, 1 : Texture, 2: Normal
@@ -39,6 +41,10 @@ TriangleInfo parseTriangle(const std::string& line) {
     TriangleInfo tinf;
 
     for (size_t i = 0; i < line.length(); i++) {
+        if (valueSize > maxValueSize) {
+            throw std::length_error(le);
+            return tinf;
+        }
         c = line[i];
         if (c == '/') {
             // Parse read value as either a vertex position index
@@ -75,7 +81,7 @@ TriangleInfo parseTriangle(const std::string& line) {
         } else if (c >= '0' && c <= '9') {
             value[valueSize++] = c;
         } else {
-            throw std::invalid_argument(error + c);
+            throw std::invalid_argument(iae + c);
         }
     }
     return tinf;
@@ -131,8 +137,11 @@ OBJ parseFromFile(const std::string& filename) {
             } else if (line.length() > 1 && line.compare(0, 2, "f ") == 0) {
                 try {
                     obj.f.push_back(parseTriangle(line.substr(2)));
-                } catch (const std::invalid_argument& e) {
-                    std::cerr << e.what() << std::endl;
+                } catch (const std::exception& e) {
+                    std::cerr 
+                        << "Error while parsing .obj file " + filename + ": "
+                        << e.what() 
+                        << std::endl;
                     file.close();
                     return obj;
                 }
