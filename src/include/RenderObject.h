@@ -11,8 +11,9 @@
 #include "Camera.h"
 #include "OBJ.h"
 #include "VertexLayout.h"
+#include "Transformable.h"
 
-class RenderObject {
+class RenderObject : public Transformable {
 public:
     RenderObject(
         const std::vector<GLfloat> data,
@@ -20,12 +21,8 @@ public:
     );
     
     virtual void draw(Camera* camera);
-    virtual void move(glm::vec3 d);
-    virtual void rotate(float angle, glm::vec3 axis, bool useRadians=false);
 
-    glm::vec3 pos = glm::vec3(0, 0, 0);
     glm::vec3 scale = glm::vec3(1, 1, 1);
-    glm::quat quat;
 
     static RenderObject fromOBJ(OBJ::OBJ o);
 

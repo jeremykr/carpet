@@ -4,6 +4,7 @@ RenderObject::RenderObject(
     const std::vector<GLfloat> data,
     const VertexLayout layout
 ) :
+    Transformable(),
     data(data), layout(layout)
 { 
     vertexCount = data.size() / (
@@ -80,8 +81,14 @@ void RenderObject::draw(Camera* camera) {
     glBindVertexArray(vao);
 
     glm::mat4 ident;
-    glm::mat4 modelMatrix = glm::translate(ident, pos) * glm::scale(ident, scale);
-    glm::mat4 MVP = camera->getProjectionMatrix() * camera->getViewMatrix() * modelMatrix;
+    glm::mat4 modelMatrix = 
+        glm::translate(ident, pos) * 
+        glm::toMat4(quat) * 
+        glm::scale(ident, scale);
+    glm::mat4 MVP = 
+        camera->getProjectionMatrix() * 
+        camera->getViewMatrix() * 
+        modelMatrix;
 
     GLuint loc = glGetUniformLocation(pid, "MVP");
     glUniformMatrix4fv(loc, 1, GL_FALSE, glm::value_ptr(MVP));
@@ -90,14 +97,6 @@ void RenderObject::draw(Camera* camera) {
 
     glBindVertexArray(0);
     glUseProgram(0);
-}
-
-void RenderObject::move(glm::vec3 d) {
-
-}
-
-void RenderObject::rotate(float angle, glm::vec3 axis, bool useRadians) {
-
 }
 
 RenderObject RenderObject::fromOBJ(OBJ::OBJ o) {
