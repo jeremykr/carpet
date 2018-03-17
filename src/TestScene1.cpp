@@ -3,7 +3,6 @@
 TestScene1::TestScene1() {
     camera = new PerspectiveCamera(0.05, 1000, 800./600., 60);
     camera->pos = glm::vec3(0, 0, 2);
-    objects.push_back(new TestTriangle());
 
     OBJ::OBJ obj = OBJ::parseFromFile("resources/cube.obj");
     OBJ::PointInfo p;
@@ -33,6 +32,16 @@ TestScene1::TestScene1() {
             std::cout << std::endl;
         }
     }
+
+    RenderObject triangle(
+        std::vector<GLfloat> {
+            -1., -1., 0.,
+            1., -1., 0.,
+            0., 1., 0.
+        },
+        VertexLayout { 3, 0, 0 }
+    );
+    objects.push_back(triangle);
 
 }
 

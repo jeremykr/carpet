@@ -7,7 +7,7 @@ class Scene {
 public:
     ~Scene();
 
-    std::vector<RenderObject*> objects;
+    std::vector<RenderObject> objects;
     Camera* camera;
 
     void draw();

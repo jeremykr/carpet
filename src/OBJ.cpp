@@ -69,8 +69,17 @@ TriangleInfo parseTriangle(const std::string& line) {
             valueType = 0;
             valueSize = 0;
             PointInfo pinf;
-            // Subtract 1 so that all values are 0-based
-            // instead of 1-based as they appear in the file
+            /* 
+                Subtract 1 so that all values are 0-based
+                instead of 1-based as they appear in the file.
+                Index values will be -1 if that attribute does not
+                exist in the source file (4,294,967,295 as uint).
+                This will (likely) end up throwing an out_of_range exception
+                if an attribute vector is accessed with this value.
+
+                TODO: A more elegant way of handling missing attributes
+                from .obj files.
+            */
             pinf.vIndex = vIndex-1;
             pinf.vtIndex = vtIndex-1;
             pinf.vnIndex = vnIndex-1;
@@ -93,6 +102,7 @@ OBJ parseFromFile(const std::string& filename) {
     std::ifstream file(filename);
     std::string line;
     OBJ obj;
+    std::string msg = "Error while parsing .obj file " + filename + ": ";
 
     if (file.is_open()) {
 
@@ -108,7 +118,7 @@ OBJ parseFromFile(const std::string& filename) {
                 try {
                     obj.v.push_back(parseVec(line.substr(2)));
                 } catch (const std::invalid_argument& e) {
-                    std::cerr << e.what() << std::endl;
+                    std::cerr << msg << e.what() << std::endl;
                     file.close();
                     return obj;
                 }
@@ -117,7 +127,7 @@ OBJ parseFromFile(const std::string& filename) {
                 try {
                     obj.vt.push_back(parseVec(line.substr(3)));
                 } catch (const std::invalid_argument& e) {
-                    std::cerr << e.what() << std::endl;
+                    std::cerr << msg << e.what() << std::endl;
                     file.close();
                     return obj;
                 }
@@ -126,7 +136,7 @@ OBJ parseFromFile(const std::string& filename) {
                 try {
                     obj.vn.push_back(parseVec(line.substr(3)));
                 } catch (const std::invalid_argument& e) {
-                    std::cerr << e.what() << std::endl;
+                    std::cerr << msg << e.what() << std::endl;
                     file.close();
                     return obj;
                 }
@@ -141,10 +151,7 @@ OBJ parseFromFile(const std::string& filename) {
                 try {
                     obj.f.push_back(parseTriangle(line.substr(2)));
                 } catch (const std::exception& e) {
-                    std::cerr 
-                        << "Error while parsing .obj file " + filename + ": "
-                        << e.what() 
-                        << std::endl;
+                    std::cerr << msg << e.what() << std::endl;
                     file.close();
                     return obj;
                 }

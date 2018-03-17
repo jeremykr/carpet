@@ -1,6 +1,5 @@
 #pragma once
 #include "Scene.h"
-#include "TestTriangle.h"
 #include "PerspectiveCamera.h"
 #include "OBJ.h"
 

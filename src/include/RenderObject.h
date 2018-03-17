@@ -7,11 +7,17 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/quaternion.hpp>
 #include <glm/gtx/quaternion.hpp>
+#include <glm/gtc/type_ptr.hpp>
 #include "Camera.h"
+#include "OBJ.h"
+#include "VertexLayout.h"
 
 class RenderObject {
 public:
-    RenderObject();
+    RenderObject(
+        const std::vector<GLfloat> data,
+        const VertexLayout layout
+    );
     
     virtual void draw(Camera* camera);
     virtual void move(glm::vec3 d);
@@ -21,6 +27,16 @@ public:
     glm::vec3 scale = glm::vec3(1, 1, 1);
     glm::quat quat;
 
+    static RenderObject fromOBJ(OBJ::OBJ o);
+
 protected:
-    GLuint pid, vbo;
+    GLuint 
+        vao,            // vertex attribute object
+        vbo,            // vertex buffer object
+        vsid,           // vertex shader id
+        fsid,           // fragment shader id
+        pid;            // shader program id
+    const std::vector<GLfloat> data;
+    const VertexLayout layout;
+    unsigned vertexCount;
 };
