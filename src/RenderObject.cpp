@@ -13,7 +13,6 @@ RenderObject::RenderObject(
         layout.normalDimensions
     );
 
-    std::cout << vertexCount << std::endl;
     // Define shader sources
     const GLchar* vshaderSource = R"glsl(
     # version 330 core
@@ -35,8 +34,47 @@ RenderObject::RenderObject(
     glBindVertexArray(vao);
     glGenBuffers(1, &vbo);
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
+
+    GLsizei stride = (
+        layout.positionDimensions +
+        layout.textureDimensions +
+        layout.normalDimensions
+    ) * sizeof(GLfloat);
+    
     glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+    glVertexAttribPointer(
+        0, 
+        layout.positionDimensions, 
+        GL_FLOAT, 
+        GL_FALSE, 
+        stride, 
+        (GLvoid*)0
+    );
+
+    if (layout.textureDimensions > 0) {
+        glEnableVertexAttribArray(1);
+        glVertexAttribPointer(
+            1, 
+            layout.textureDimensions, 
+            GL_FLOAT, 
+            GL_FALSE, 
+            stride, 
+            (GLvoid*)(layout.positionDimensions * sizeof(GLfloat))
+        );
+    }
+
+    if (layout.normalDimensions > 0) {
+        glEnableVertexAttribArray(2);
+        glVertexAttribPointer(
+            2, 
+            layout.normalDimensions, 
+            GL_FLOAT, 
+            GL_FALSE, 
+            stride,
+            (GLvoid*)((layout.positionDimensions + layout.textureDimensions) * sizeof(GLfloat))
+        );
+    }
+
     glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * data.size(), &data[0], GL_STATIC_DRAW);
 
     // Vertex Shader
@@ -101,9 +139,37 @@ void RenderObject::draw(Camera* camera) {
 
 RenderObject RenderObject::fromOBJ(OBJ::OBJ o) {
     std::vector<GLfloat> data;
-    VertexLayout layout;
+    VertexLayout layout { 3, 2, 3 };
+    OBJ::PointInfo p;
 
-    // TODO: Implement
+    for (OBJ::TriangleInfo t : o.f) {
+        for (size_t i = 0; i < 3; i++) {
+            p = t.points[i];
+            // position
+            if (p.vIndex < o.v.size()) {
+                for (auto x : o.v[p.vIndex])
+                    data.push_back(x);
+            } else {
+                layout.positionDimensions = 0;
+            }
+            // tex coords
+            if (p.vtIndex < o.vt.size()) {
+                for (auto x : o.vt[p.vtIndex])
+                    data.push_back(x);
+            } else {
+                layout.textureDimensions = 0;
+            }
+            // normal
+            if (p.vnIndex < o.vn.size()) {
+                for (auto x : o.vn[p.vnIndex])
+                    data.push_back(x);
+            } else {
+                layout.normalDimensions = 0;
+            }
+        }  
+    }
 
-    return RenderObject(data, layout);
+    RenderObject ro(data, layout);
+    ro.tag = o.o;
+    return ro;
 }

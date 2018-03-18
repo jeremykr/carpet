@@ -23,6 +23,7 @@ public:
     virtual void draw(Camera* camera);
 
     glm::vec3 scale = glm::vec3(1, 1, 1);
+    std::string tag;
 
     static RenderObject fromOBJ(OBJ::OBJ o);
 
