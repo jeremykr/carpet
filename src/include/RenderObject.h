@@ -9,7 +9,7 @@
 #include <glm/gtx/quaternion.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include "Camera.h"
-#include "OBJ.h"
+#include "Wavefront.h"
 #include "VertexLayout.h"
 #include "Transformable.h"
 
@@ -24,8 +24,9 @@ public:
 
     glm::vec3 scale = glm::vec3(1, 1, 1);
     std::string tag;
+    Wavefront::MTL material;
 
-    static RenderObject fromOBJ(OBJ::OBJ o);
+    static RenderObject fromOBJ(Wavefront::OBJ o);
 
 protected:
     GLuint 

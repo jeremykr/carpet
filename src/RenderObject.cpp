@@ -1,5 +1,21 @@
 #include "RenderObject.h"
 
+void checkError() {
+    GLenum error = glGetError();
+    if (error != GL_NO_ERROR) {
+        std::cout << "GL error: " << std::endl;
+        switch (error) {
+            case GL_INVALID_ENUM: std::cout << "Invalid enum"; break;
+            case GL_INVALID_VALUE: std::cout << "Invalid value"; break;
+            case GL_INVALID_OPERATION: std::cout << "Invalid operation"; break;
+            case GL_INVALID_FRAMEBUFFER_OPERATION: std::cout << "Invalid framebuffer operation"; break;
+            case GL_OUT_OF_MEMORY: std::cout << "Out of memory"; break;
+            default: std::cout << "Unknown error";
+        }
+        std::cout << std::endl;
+    }
+}
+
 RenderObject::RenderObject(
     const std::vector<GLfloat> data,
     const VertexLayout layout
@@ -16,14 +32,22 @@ RenderObject::RenderObject(
     // Define shader sources
     const GLchar* vshaderSource = R"glsl(
     # version 330 core
-    layout(location = 0) in vec3 pos;
+    layout(location = 0) in vec3 vpos;
+    layout(location = 1) in vec2 vuv;
+    layout(location = 2) in vec3 vnorm;
     uniform mat4 MVP;
+    out vec2 fuv;
+    out vec3 fnorm; 
     void main() {
-        gl_Position = MVP * vec4(pos, 1.0);
+        gl_Position = MVP * vec4(vpos, 1.0);
+        fuv = vuv;
+        fnorm = vnorm;
     })glsl";
 
     const GLchar* fshaderSource = R"glsl(
     # version 330 core
+    in vec2 fuv;
+    in vec3 fnorm;
     out vec4 color;
     void main() {
         color = vec4(1,1,1,1);
@@ -77,6 +101,7 @@ RenderObject::RenderObject(
 
     glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * data.size(), &data[0], GL_STATIC_DRAW);
 
+
     // Vertex Shader
     vsid = glCreateShader(GL_VERTEX_SHADER);
     glShaderSource(
@@ -87,10 +112,11 @@ RenderObject::RenderObject(
     );
     glCompileShader(vsid);
 
-    GLchar infoLog [100];
+    size_t maxLogSize = 1000;
+    GLchar infoLog [maxLogSize];
     GLsizei length;
 
-    glGetShaderInfoLog(vsid, 100, &length, infoLog);
+    glGetShaderInfoLog(vsid, maxLogSize, &length, infoLog);
     std::cout << infoLog << std::endl;
 
     // Fragment Shader
@@ -103,7 +129,7 @@ RenderObject::RenderObject(
     );
     glCompileShader(fsid);
 
-    glGetShaderInfoLog(fsid, 100, &length, infoLog);
+    glGetShaderInfoLog(fsid, maxLogSize, &length, infoLog);
     std::cout << infoLog << std::endl;
 
     // Create shader program
@@ -112,6 +138,7 @@ RenderObject::RenderObject(
     glAttachShader(pid, fsid);
     glLinkProgram(pid);
 
+    checkError();
 }
 
 void RenderObject::draw(Camera* camera) {
@@ -135,14 +162,16 @@ void RenderObject::draw(Camera* camera) {
 
     glBindVertexArray(0);
     glUseProgram(0);
+
+    checkError();
 }
 
-RenderObject RenderObject::fromOBJ(OBJ::OBJ o) {
+RenderObject RenderObject::fromOBJ(Wavefront::OBJ o) {
     std::vector<GLfloat> data;
     VertexLayout layout { 3, 2, 3 };
-    OBJ::PointInfo p;
+    Wavefront::PointInfo p;
 
-    for (OBJ::TriangleInfo t : o.f) {
+    for (Wavefront::TriangleInfo t : o.f) {
         for (size_t i = 0; i < 3; i++) {
             p = t.points[i];
             // position

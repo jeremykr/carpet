@@ -8,7 +8,7 @@
 #include <stdexcept>
 
 // Structs and functions for parsing a Wavefront .obj file
-namespace OBJ {
+namespace Wavefront {
 
     struct PointInfo {
         unsigned vIndex, vtIndex, vnIndex;
@@ -29,7 +29,16 @@ namespace OBJ {
         std::vector<TriangleInfo> f;
     };
 
-    OBJ parseFromFile(const std::string& filename);
+    OBJ parseOBJFile(const std::string& filename);
     std::vector<float> parseVec(const std::string& line);
     TriangleInfo parseTriangle(const std::string& line);
+
+    struct MTL {
+        std::string newmtl;
+        float Ns, Ni, d;
+        std::vector<float> Ka, Kd, Ks, Ke;
+        unsigned illum;
+    };
+
+    MTL parseMTLFile(const std::string& filename);
 }

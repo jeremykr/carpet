@@ -1,7 +1,7 @@
 #pragma once
 #include "Scene.h"
 #include "PerspectiveCamera.h"
-#include "OBJ.h"
+#include "Wavefront.h"
 
 class TestScene1 : public Scene {
 public:

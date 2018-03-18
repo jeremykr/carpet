@@ -1,8 +1,8 @@
-#include "OBJ.h"
+#include "Wavefront.h"
 
 // Parse a string of space-separated floating point values
 // into a vector.
-namespace OBJ {
+namespace Wavefront {
 
 // Parse a string from the .obj file into a float vector
 std::vector<float> parseVec(const std::string& line) {
@@ -98,7 +98,7 @@ TriangleInfo parseTriangle(const std::string& line) {
     return tinf;
 }
 
-OBJ parseFromFile(const std::string& filename) {
+OBJ parseOBJFile(const std::string& filename) {
     std::ifstream file(filename);
     std::string line;
     OBJ obj;
